@@ -102,6 +102,37 @@ public class BoardRepositoryTests {
         // 람다식 1개의 명령어가 있을 때 활용한다.
     }
 
+    // Querydsl 테스트
+    @Test
+    public void testSearch1() {
+        
+        Pageable pageable = PageRequest.of(1, 10, Sort.by("bno").descending());
+        
+        Page<Board> result = boardRepository.search1(pageable); // 페이징 기법을 사용해서 title=1 인 게시물을 찾아와라
 
+        result.getContent().forEach(board -> log.info(board));
+    }
 
+    @Test
+    public void testSearchAll() {
+        // 프론트에서 t가 선택되면 title, c가 선택되면 content, w가 선택되면 writer 라는 조건이 제시된다.
+
+        String[] types = {"t", "c"};
+        String keyword = "1";
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
+
+        Page<Board> result = boardRepository.searchAll(types, keyword, pageable);
+
+        log.info("전체 페이지 수 : " + result.getTotalElements());
+        log.info("총 페이지 수 : " + result.getTotalPages());
+        log.info("현재 페이지 번호 : " + result.getNumber());
+        log.info("페이지의 크기 : " + result.getSize());
+        log.info("다음 페이지 여부 : " + result.hasNext());
+        log.info("시작 페이지 여부 : " + result.isFirst());
+
+        result.getContent().forEach(board -> log.info(board));
+    }
+
+    
 } // 클래스 종료
